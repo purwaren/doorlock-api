@@ -18,6 +18,7 @@ public class DowsJnaService {
 
     public CommonResponse connect() {
         int status = dows.dv_connect(1);
+        dows.dv_disconnect();
         return new CommonResponse(status);
     }
 
@@ -30,6 +31,7 @@ public class DowsJnaService {
     public CardCheckResponse cardCheck() {
         connect();
         int cardType = dows.dv_check_card();
+        dows.dv_disconnect();
         return new CardCheckResponse(cardType);
     }
 
@@ -37,6 +39,7 @@ public class DowsJnaService {
         connect();
         Memory cardType = new Memory(Native.LONG_SIZE);
         int status = dows.dv_verify_card(cardType);
+        dows.dv_disconnect();
         return new CardCheckResponse(cardType.getInt(0));
     }
 
@@ -44,6 +47,7 @@ public class DowsJnaService {
         connect();
         Memory authCode = new Memory(6);
         int status = dows.dv_get_auth_code(authCode);
+        dows.dv_disconnect();
         CommonRequest resp = new CommonRequest(authCode.getString(0, "UTF-8"));
         this.authCode = resp.getAuth();
         return resp;
@@ -53,6 +57,7 @@ public class DowsJnaService {
         connect();
         Memory cardNo = new Memory(6);
         int status = dows.dv_get_card_number(cardNo);
+        dows.dv_disconnect();
         ReadCardResponse resp = new ReadCardResponse();
         resp.setCardNo(cardNo.getString(0, "UTF-8"));
         resp.setStatus(status);
@@ -70,6 +75,7 @@ public class DowsJnaService {
         Memory departure = new Memory(19);
 
         int status = dows.dv_read_card(auth, cardNo, building, room, door, arrival, departure);
+        dows.dv_disconnect();
         ReadCardResponse resp = new ReadCardResponse();
         resp.setStatus(status);
         resp.setCardNo(cardNo.getString(0, "UTF-8"));
@@ -101,6 +107,8 @@ public class DowsJnaService {
         departure.write(0, req.getDeparture().getBytes(), 0, req.getDeparture().length());
 
         int status = dows.dv_write_card(auth, building, room, door, arrival, departure);
+        dows.dv_disconnect();
+
         return new CommonResponse(status);
     }
 
@@ -108,6 +116,8 @@ public class DowsJnaService {
         Memory room = new Memory(req.getRoom().length());
         room.write(0, req.getRoom().getBytes(), 0, req.getRoom().length());
         int status = dows.dv_delete_card(room);
+        dows.dv_disconnect();
+
         return new CommonResponse(status);
     }
 }
