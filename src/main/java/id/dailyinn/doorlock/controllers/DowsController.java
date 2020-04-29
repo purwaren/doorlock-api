@@ -1,11 +1,9 @@
 package id.dailyinn.doorlock.controllers;
 
-import id.dailyinn.doorlock.dto.CardCheckResponse;
-import id.dailyinn.doorlock.dto.CommonResponse;
+import id.dailyinn.doorlock.dto.*;
 import id.dailyinn.doorlock.service.DowsJnaService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class DowsController {
@@ -13,18 +11,48 @@ public class DowsController {
     @Autowired
     DowsJnaService dows;
 
-    @PostMapping("/dows/connect")
+    @GetMapping("/dows/connect")
     public CommonResponse connect() {
         return dows.connect();
     }
 
-    @PostMapping("/dows/disconnect")
+    @GetMapping("/dows/disconnect")
     public CommonResponse disconnect() {
         return dows.disconnect();
     }
 
-    @PostMapping("/dows/cardCheck")
+    @GetMapping("/dows/card/check")
     public CardCheckResponse cardCheck() {
         return dows.cardCheck();
+    }
+
+    @GetMapping("/dows/card/verify")
+    public CardCheckResponse verifyCard() {
+        return dows.verifyCard();
+    }
+
+    @GetMapping("/dows/auth")
+    public CommonRequest getAuthorization() {
+        return dows.getAuthCode();
+    }
+
+    @GetMapping("/dows/card/number")
+    public ReadCardResponse getCardNumber() {
+        return dows.getCardNumber();
+    }
+
+    @GetMapping("/dows/card")
+    public ReadCardResponse readCard() {
+        return dows.readCard();
+    }
+
+    @PostMapping("/dows/card")
+    public CommonResponse writeCard(@RequestBody WriteCardRequest req) {
+        return dows.writeCard(req);
+    }
+
+    @DeleteMapping("/dows/card")
+    public CommonResponse deleteCard(@RequestBody DeleteCardRequest req) {
+        return dows.deleteCard(req);
     }
 }
