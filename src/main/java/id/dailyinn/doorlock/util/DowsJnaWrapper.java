@@ -14,7 +14,7 @@ public interface DowsJnaWrapper extends Library {
     int dv_check_card();
     int dv_verify_card(Pointer ctype);
     int dv_get_auth_code(Pointer auth);
-    int dv_get_card_number(Pointer ptr);
+    int dv_get_card_number(Pointer cardno);
     int dv_read_card(Pointer auth, Pointer cardno, Pointer building, Pointer room, Pointer door, Pointer arrival, Pointer departure);
     int dv_write_card(Pointer auth, Pointer building, Pointer room, Pointer door, Pointer arrival, Pointer departure);
     int dv_delete_card(Pointer room);
