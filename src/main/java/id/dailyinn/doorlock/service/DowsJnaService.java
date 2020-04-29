@@ -22,7 +22,6 @@ public class DowsJnaService {
     }
 
     public CommonResponse disconnect() {
-        connect();
         int status = dows.dv_disconnect();
         return new CommonResponse(status);
     }
