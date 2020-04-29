@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class WriteCardRequest extends CommonRequest {
+public class WriteCardRequest {
     private String building;
     private String room;
     private String door;
