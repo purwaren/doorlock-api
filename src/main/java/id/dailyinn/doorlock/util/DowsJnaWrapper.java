@@ -3,9 +3,9 @@ package id.dailyinn.doorlock.util;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-@Component
 public interface DowsJnaWrapper extends Library {
     DowsJnaWrapper INSTANCE = (DowsJnaWrapper) Native.load("CLock", DowsJnaWrapper.class);
 
