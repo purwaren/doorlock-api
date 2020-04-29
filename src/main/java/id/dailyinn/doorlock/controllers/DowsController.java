@@ -51,8 +51,8 @@ public class DowsController {
         return dows.writeCard(req);
     }
 
-    @DeleteMapping("/dows/card")
-    public CommonResponse deleteCard(@RequestBody DeleteCardRequest req) {
-        return dows.deleteCard(req);
+    @DeleteMapping("/dows/card/{room}")
+    public CommonResponse deleteCard(@PathVariable String room) {
+        return dows.deleteCard(room);
     }
 }

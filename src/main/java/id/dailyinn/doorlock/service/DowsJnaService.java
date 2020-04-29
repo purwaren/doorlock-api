@@ -103,9 +103,9 @@ public class DowsJnaService {
         return new CommonResponse(status);
     }
 
-    public CommonResponse deleteCard(DeleteCardRequest req) {
-        Memory room = new Memory(req.getRoom().length());
-        room.write(0, req.getRoom().getBytes(), 0, req.getRoom().length());
+    public CommonResponse deleteCard(String roomNo) {
+        Memory room = new Memory(roomNo.length());
+        room.write(0, roomNo.getBytes(), 0, roomNo.length());
         int status = dows.dv_delete_card(room);
         return new CommonResponse(status);
     }
