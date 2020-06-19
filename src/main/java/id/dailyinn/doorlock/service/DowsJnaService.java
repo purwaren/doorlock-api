@@ -4,6 +4,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.Native;
 import id.dailyinn.doorlock.dto.*;
 import id.dailyinn.doorlock.util.DowsJnaWrapper;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class DowsJnaService {
 
-    private final DowsJnaWrapper dows = DowsJnaWrapper.INSTANCE;
+    @Setter
+    private DowsJnaWrapper dows;
 
     @Value("${dows.card.auth}")
     private String authCode;
