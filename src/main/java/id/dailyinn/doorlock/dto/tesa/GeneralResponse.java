@@ -12,6 +12,4 @@ public class GeneralResponse {
     private String rawMsg;
     private String rawMsgHex;
     private String rawMsgBase64;
-    private String userInternet;
-    private String passwdInternet;
 }
