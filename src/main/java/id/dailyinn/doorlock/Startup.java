@@ -45,7 +45,7 @@ public class Startup {
     @PostConstruct
     public void initDows() {
         if (isActiveDows) {
-            logger.info("Tesa module is activated");
+            logger.info("Dows module is activated");
             logger.info("Try to connect");
             jnaService.setDows(DowsJnaWrapper.INSTANCE);
             jnaService.connect();
@@ -55,7 +55,9 @@ public class Startup {
     @PostConstruct
     public void initTesa() throws IOException, InterruptedException {
         if (isActiveTesa) {
+            logger.info("Tesa module is activated");
             tesaConnector = new TesaConnector(tesaAddress, tesaPort, tesaTimeout);
+            tesaService.setConnector(tesaConnector);
             new Thread(tesaConnector).start();
             int i=0;
             while (!tesaConnector.isReady) {
