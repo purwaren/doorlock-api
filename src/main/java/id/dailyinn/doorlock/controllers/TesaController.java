@@ -28,4 +28,9 @@ public class TesaController {
     public GeneralResponse preCheckIn(@RequestBody PreCheckInRequest req) throws IOException, InterruptedException {
         return tesaService.preCheckIn(req);
     }
+
+    @PostMapping("/tesa/checkin")
+    public GeneralResponse checkIn(@RequestBody PreCheckInRequest req) throws IOException, InterruptedException {
+        return tesaService.preCheckIn(req);
+    }
 }
