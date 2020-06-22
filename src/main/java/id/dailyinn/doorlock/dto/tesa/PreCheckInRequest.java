@@ -2,6 +2,8 @@ package id.dailyinn.doorlock.dto.tesa;
 
 import id.dailyinn.doorlock.constant.TesaCommand;
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by purwa on 5/14/17.
@@ -9,6 +11,9 @@ import lombok.Data;
 
 @Data
 public class PreCheckInRequest extends GeneralRequest {
+
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     private String room;
     private String activationDate;
     private String activationTime;
@@ -57,12 +62,15 @@ public class PreCheckInRequest extends GeneralRequest {
         byte[] card = this.getCardId().getBytes();
 
         //separator + stx + etx =23
-        int cmdLength = 23 + cmd.length + cardOperation.length + tech.length + enc.length + room.length + actDate.length
+        int cmdLength = 22 + cmd.length + cardOperation.length + tech.length + enc.length + room.length + actDate.length
                 + actTime.length + expDate.length + expTime.length + grant.length + key.length + op.length + track1.length
                 + track2.length + room2.length + room3.length + room4.length + retCard.length + card.length;
-//        if(pc.length > 0)
-//            cmdLength += 1 + pc.length;
+        if(pc.length > 0)
+            cmdLength += 1 + pc.length;
         byte[] command = new byte[cmdLength];
+
+        logger.info("command length = {}",cmdLength);
+
         int offset = 0;
         //STX
         command[offset] = TesaCommand.STX;
@@ -70,14 +78,14 @@ public class PreCheckInRequest extends GeneralRequest {
         //SEP
         command[offset] = TesaCommand.SEP;
         offset++;
-        //if(pc.length > 0) {
+        if(pc.length > 0) {
             //PC_ID
             System.arraycopy(pc, 0, command, offset, pc.length);
             offset += pc.length;
             //SEP
             command[offset] = TesaCommand.SEP;
             offset++;
-        //}
+        }
         //CMD - PI
         System.arraycopy(cmd, 0, command, offset, cmd.length);
         offset += cmd.length;
