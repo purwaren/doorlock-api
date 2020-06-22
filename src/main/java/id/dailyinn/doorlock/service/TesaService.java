@@ -21,12 +21,22 @@ public class TesaService {
     private TesaConnector connector;
 
     public ReadCardResponse readCard(ReadCardRequest req) throws IOException, InterruptedException, DecoderException {
-        byte[] resp = connector.sendCommand(req.buildCommand());
-        return CommandUtil.decodeMessageReadCard(req, resp);
+        connector.connect();
+        if (connector.isConnected()) {
+            byte[] resp = connector.sendCommand(req.buildCommand());
+            connector.disconnect();
+            return CommandUtil.decodeMessageReadCard(req, resp);
+        }
+        else return new ReadCardResponse();
     }
 
     public GeneralResponse preCheckIn(PreCheckInRequest req) throws IOException, InterruptedException {
-        byte[] resp = connector.sendCommand(req.buildCommand());
-        return CommandUtil.decodeMessagePreCheckIn(req, resp);
+        connector.connect();
+        if (connector.isConnected()) {
+            byte[] resp = connector.sendCommand(req.buildCommand());
+            connector.disconnect();
+            return CommandUtil.decodeMessagePreCheckIn(req, resp);
+        }
+        else return new GeneralResponse();
     }
 }

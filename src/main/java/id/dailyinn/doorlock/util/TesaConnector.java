@@ -51,8 +51,28 @@ public class TesaConnector implements Runnable{
         }
     }
 
+    public void disconnect() throws IOException {
+        if (!socket.isClosed() || socket.isConnected()) {
+            socket.close();
+            logger.info("Connection to "+this.host+":"+this.port+" disconnected");
+        }
+    }
+
+    public boolean isConnected() throws InterruptedException {
+        int i=0;
+        while(true) {
+            if (!this.isReady && i < 30) {
+                Thread.sleep(1000);
+                i++;
+            } else {
+                break;
+            }
+        }
+        return this.isReady;
+    }
+
     @Override
-    public void run() {
+    public void run(){
         try {
             connect();
         } catch (IOException e) {

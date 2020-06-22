@@ -59,16 +59,9 @@ public class Startup {
             tesaConnector = new TesaConnector(tesaAddress, tesaPort, tesaTimeout);
             tesaService.setConnector(tesaConnector);
             new Thread(tesaConnector).start();
-            int i=0;
-            while (!tesaConnector.isReady) {
-                i++;
-                logger.debug("waiting connection...");
-                Thread.sleep(1000);
-                if(i == 30)
-                    break;
-            }
-            if (tesaConnector.isReady) {
+            if (tesaConnector.isConnected()) {
                 tesaConnector.sendEchoTest();
+                tesaConnector.disconnect();
             } else {
                 logger.info("TESA connector is not ready");
             }
