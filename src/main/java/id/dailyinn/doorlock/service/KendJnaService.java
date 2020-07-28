@@ -21,10 +21,10 @@ public class KendJnaService {
     }
 
     public ReadCardResponse readGuestCard() {
-        StringBuilder card = new StringBuilder();
-        StringBuilder room = new StringBuilder();
-        StringBuilder checkin = new StringBuilder();
-        StringBuilder checkout = new StringBuilder();
+        StringBuffer card = new StringBuffer();
+        StringBuffer room = new StringBuffer();
+        StringBuffer checkin = new StringBuffer();
+        StringBuffer checkout = new StringBuffer();
         int result = jnaWrapper.TP_ReadGuestCard(card, room, checkin, checkout);
         logger.info("result == {}", result);
         ReadCardResponse response = new ReadCardResponse();
@@ -38,7 +38,7 @@ public class KendJnaService {
     }
 
     public ReadCardResponse writeGuestCard(WriteCardRequest req) {
-        StringBuilder card = new StringBuilder();
+        StringBuffer card = new StringBuffer();
         int result = jnaWrapper.TP_MakeGuestCard(card,req.getRoom(), req.getCheckin(), req.getCheckout(), req.getFlags());
         ReadCardResponse response = new ReadCardResponse();
         if (result > 0) {
@@ -51,7 +51,7 @@ public class KendJnaService {
     }
 
     public void cancelCard(String card) {
-        StringBuilder cardSnr = new StringBuilder();
+        StringBuffer cardSnr = new StringBuffer();
         cardSnr.append(card);
         int result = jnaWrapper.TP_CancelCard(cardSnr);
         if (result > 0) {

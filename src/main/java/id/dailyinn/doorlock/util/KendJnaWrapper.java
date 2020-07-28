@@ -7,8 +7,8 @@ public interface KendJnaWrapper extends Library {
     KendJnaWrapper INSTANCE = (KendJnaWrapper) Native.load("LockSDK", KendJnaWrapper.class);
 
     int TP_Configuration (int lockType);
-    int TP_MakeGuestCard (StringBuilder cardSnr, String room, String checkin, String checkout, int flags);
-    int TP_ReadGuestCard (StringBuilder cardSnr, StringBuilder room, StringBuilder checkin, StringBuilder checkout);
-    int TP_CancelCard (StringBuilder cardSnr);
-    int TP_GetCardSnr (StringBuilder cardSnr);
+    int TP_MakeGuestCard (StringBuffer cardSnr, String room, String checkin, String checkout, int flags);
+    int TP_ReadGuestCard (StringBuffer cardSnr, StringBuffer room, StringBuffer checkin, StringBuffer checkout);
+    int TP_CancelCard (StringBuffer cardSnr);
+    int TP_GetCardSnr (StringBuffer cardSnr);
 }
