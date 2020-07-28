@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class KendJnaService {
@@ -47,5 +48,21 @@ public class KendJnaService {
             response.setCheckout(req.getCheckout());
         }
         return response;
+    }
+
+    public void cancelCard(String card) {
+        StringBuilder cardSnr = new StringBuilder();
+        cardSnr.append(card);
+        int result = jnaWrapper.TP_CancelCard(cardSnr);
+        if (result > 0) {
+            logger.info("card cancelled");
+        }
+    }
+
+    public void setConfig(int lockType) {
+        int result = jnaWrapper.TP_Configuration(lockType);
+        if (result > 0) {
+            logger.info("configured encoder");
+        }
     }
 }

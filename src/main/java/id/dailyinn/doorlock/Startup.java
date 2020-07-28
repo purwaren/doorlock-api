@@ -1,8 +1,10 @@
 package id.dailyinn.doorlock;
 
 import id.dailyinn.doorlock.service.DowsJnaService;
+import id.dailyinn.doorlock.service.KendJnaService;
 import id.dailyinn.doorlock.service.TesaService;
 import id.dailyinn.doorlock.util.DowsJnaWrapper;
+import id.dailyinn.doorlock.util.KendJnaWrapper;
 import id.dailyinn.doorlock.util.TesaConnector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +27,17 @@ public class Startup {
     @Autowired
     TesaService tesaService;
 
+    @Autowired
+    KendJnaService kendJnaService;
+
     @Value("${dows.active}")
     boolean isActiveDows;
 
     @Value("${tesa.active}")
     boolean isActiveTesa;
+
+    @Value("${kend.active}")
+    boolean isActiveKend;
 
     @Value("${tesa.server.address}")
     String tesaAddress;
@@ -65,6 +73,15 @@ public class Startup {
             } else {
                 logger.info("TESA connector is not ready");
             }
+        }
+    }
+
+    @PostConstruct
+    public void initKend() {
+        if (isActiveKend) {
+            logger.info("Kend module is activated");
+            kendJnaService.setJnaWrapper(KendJnaWrapper.INSTANCE);
+            kendJnaService.setConfig(5);
         }
     }
 }
