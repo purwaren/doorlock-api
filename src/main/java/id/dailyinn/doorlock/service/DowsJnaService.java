@@ -19,18 +19,35 @@ public class DowsJnaService {
     private String authCode;
 
     public CommonResponse connect() {
-        int status = dows.dv_connect(1);
+        int status;
+        try {
+            status = dows.dv_connect(1);
+        } catch (Exception e) {
+            status = -1;
+            e.printStackTrace();
+        }
         return new CommonResponse(status);
     }
 
     public CommonResponse disconnect() {
-        int status = dows.dv_disconnect();
+        int status;
+        try {
+            status = dows.dv_disconnect(1);
+        } catch (Exception e) {
+            status = -1;
+            e.printStackTrace();
+        }
         return new CommonResponse(status);
     }
 
     public CardCheckResponse cardCheck() {
         connect();
-        int cardType = dows.dv_check_card();
+        int cardType;
+        try {
+            cardType = dows.dv_check_card();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new CardCheckResponse(cardType);
     }
 
@@ -52,8 +69,16 @@ public class DowsJnaService {
 
     public ReadCardResponse getCardNumber() {
         connect();
+        
         Memory cardNo = new Memory(6);
-        int status = dows.dv_get_card_number(cardNo);
+        int status;
+        try {
+            status = dows.dv_get_card_number(cardNo);
+        } catch (Exception e) {
+            status = -1;
+            e.printStackTrace();
+        }
+        
         ReadCardResponse resp = new ReadCardResponse();
         resp.setCardNo(cardNo.getString(0, "UTF-8"));
         resp.setStatus(status);
@@ -61,16 +86,23 @@ public class DowsJnaService {
     }
 
     public ReadCardResponse readCard() {
-        Memory auth = new Memory(authCode.length());
-        auth.write(0, authCode.getBytes(), 0, authCode.length());
+        Memory auth = authCode.length() ? new Memory(authCode.length()) : new Memory();
+        if (authCode.length() > 0) {
+            auth.write(0, authCode.getBytes(), 0, authCode.length());
+        }
         Memory cardNo = new Memory(6);
         Memory building = new Memory(2);
         Memory room = new Memory(4);
         Memory door = new Memory(2);
         Memory arrival = new Memory(19);
         Memory departure = new Memory(19);
-
-        int status = dows.dv_read_card(auth, cardNo, building, room, door, arrival, departure);
+        int status;
+        try {
+            status = dows.dv_read_card(auth, cardNo, building, room, door, arrival, departure);
+        } catch (Exception e) {
+            status = -1;
+            e.printStackTrace();
+        } 
         ReadCardResponse resp = new ReadCardResponse();
         resp.setStatus(status);
         resp.setCardNo(cardNo.getString(0, "UTF-8"));
@@ -83,8 +115,10 @@ public class DowsJnaService {
     }
 
     public CommonResponse writeCard(WriteCardRequest req) {
-        Memory auth = new Memory(authCode.length());
-        auth.write(0, authCode.getBytes(), 0, authCode.length());
+        Memory auth = authCode.length() ? new Memory(authCode.length()) : new Memory();
+        if (authCode.length() > 0) {
+            auth.write(0, authCode.getBytes(), 0, authCode.length());
+        }
 
         Memory building = new Memory(req.getBuilding().length());
         building.write(0, req.getBuilding().getBytes(), 0, req.getBuilding().length());
@@ -100,15 +134,27 @@ public class DowsJnaService {
 
         Memory departure = new Memory(req.getDeparture().length());
         departure.write(0, req.getDeparture().getBytes(), 0, req.getDeparture().length());
-
-        int status = dows.dv_write_card(auth, building, room, door, arrival, departure);
+        int status;
+        try {
+            status = dows.dv_write_card(auth, building, room, door, arrival, departure);
+        } catch (Exception e) {
+            status = -1;
+            e.printStackTrace();
+        }
+        
         return new CommonResponse(status);
     }
 
     public CommonResponse deleteCard(String roomNo) {
         Memory room = new Memory(roomNo.length());
         room.write(0, roomNo.getBytes(), 0, roomNo.length());
-        int status = dows.dv_delete_card(room);
+        int status;
+        try {
+            status = dows.dv_delete_card(room);
+        } catch (Exception e) {
+            status = -1;
+            e.printStackTrace();
+        }
         return new CommonResponse(status);
     }
 }
