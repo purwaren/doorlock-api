@@ -55,4 +55,21 @@ public class DowsController {
     public CommonResponse deleteCard(@PathVariable String room) {
         return dows.deleteCard(room);
     }
+
+    @PostMapping("/dows/checkin")
+    public ReadCardResponse checkin(@RequestBody WriteCardRequest req) {
+        CommonResponse resp = dows.writeCard(req);
+        return dows.readCard();
+    }
+
+    @GetMapping("/dows/verify")
+    public ReadCardResponse verify() {
+        return dows.readCard();
+    }
+
+    @DeleteMapping("/dows/card/{room}")
+    public ReadCardResponse erase(@PathVariable String room) {
+        CommonResponse resp = dows.deleteCard(room);
+        return dows.readCard();
+    }
 }
