@@ -67,7 +67,7 @@ public class DowsController {
         return dows.readCard();
     }
 
-    @DeleteMapping("/dows/card/{room}")
+    @DeleteMapping("/dows/erase/{room}")
     public ReadCardResponse erase(@PathVariable String room) {
         CommonResponse resp = dows.deleteCard(room);
         return dows.readCard();
