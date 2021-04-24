@@ -5,12 +5,16 @@ import com.sun.jna.Native;
 import id.dailyinn.doorlock.dto.*;
 import id.dailyinn.doorlock.util.DowsJnaWrapper;
 import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
 @Service
 public class DowsJnaService {
+
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Setter
     private DowsJnaWrapper dows;
@@ -21,10 +25,11 @@ public class DowsJnaService {
     public CommonResponse connect() {
         int status = 1;
         try {
+            logger.info("Connect to encoder...");
             status = dows.dv_connect(1);
         } catch (Exception e) {
             status = -1;
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return new CommonResponse(status);
     }
@@ -32,10 +37,11 @@ public class DowsJnaService {
     public CommonResponse disconnect() {
         int status = 1;
         try {
+            logger.info("Disconnect from encoder...");
             status = dows.dv_disconnect();
         } catch (Exception e) {
             status = -1;
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return new CommonResponse(status);
     }
@@ -44,9 +50,10 @@ public class DowsJnaService {
         connect();
         int cardType = 0;
         try {
+            logger.info("Check card...");
             cardType = dows.dv_check_card();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return new CardCheckResponse(cardType);
     }
@@ -56,10 +63,11 @@ public class DowsJnaService {
         connect();
         int status = 1;
         try {
+            logger.info("Verify card...");
             status = dows.dv_verify_card(cardType);
         } catch (Exception e) {
             status = -1;
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         disconnect();
         CardCheckResponse resp =  new CardCheckResponse(cardType.getInt(0));
@@ -73,9 +81,11 @@ public class DowsJnaService {
 
         connect();
         try {
+            logger.info("Get authorization code...");
             status = dows.dv_get_auth_code(authCode);
         } catch(Exception e) {
             status = -1;
+            logger.error(e.getMessage(), e);
         }
         disconnect();
         CommonRequest resp = new CommonRequest(authCode.getString(0, "UTF-8"));
@@ -89,10 +99,11 @@ public class DowsJnaService {
         connect();
         int status = 1;
         try {
+            logger.info("Get card number....");
             status = dows.dv_get_card_number(cardNo);
         } catch (Exception e) {
             status = -1;
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         disconnect();
         ReadCardResponse resp = new ReadCardResponse();
@@ -116,10 +127,11 @@ public class DowsJnaService {
         int status = 1;
         connect();
         try {
+            logger.info("Read card...");
             status = dows.dv_read_card(auth, cardNo, building, room, door, arrival, departure);
         } catch (Exception e) {
             status = -1;
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } 
         disconnect();
         ReadCardResponse resp = new ReadCardResponse();
@@ -130,6 +142,7 @@ public class DowsJnaService {
         resp.setDoor(door.getString(0, "UTF-8"));
         resp.setArrival(arrival.getString(0, "UTF-8"));
         resp.setDeparture(departure.getString(0, "UTF-8"));
+        logger.info("card number: "+resp.getCardNo());
         Memory.disposeAll();
         return resp;
     }
@@ -157,10 +170,11 @@ public class DowsJnaService {
         int status = 1;
         connect();
         try {
+            logger.info("Write card...");
             status = dows.dv_write_card(auth, building, room, door, arrival, departure);
         } catch (Exception e) {
             status = -1;
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         disconnect();
         Memory.disposeAll();
@@ -173,10 +187,11 @@ public class DowsJnaService {
         int status = 1;
         connect();
         try {
+            logger.info("Delete card...");
             status = dows.dv_delete_card(room);
         } catch (Exception e) {
             status = -1;
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         disconnect();
         Memory.disposeAll();
