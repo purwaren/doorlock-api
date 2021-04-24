@@ -52,25 +52,41 @@ public class DowsJnaService {
     }
 
     public CardCheckResponse verifyCard() {
-        connect();
         Memory cardType = new Memory(Native.LONG_SIZE);
-        int status = dows.dv_verify_card(cardType);
-        return new CardCheckResponse(cardType.getInt(0));
+        connect();
+        int status = 1;
+        try {
+            status = dows.dv_verify_card(cardType);
+        } catch (Exception e) {
+            status = -1;
+            e.printStackTrace();
+        }
+        disconnect();
+        CardCheckResponse resp =  new CardCheckResponse(cardType.getInt(0));
+        Memory.disposeAll();
+        return resp;
     }
 
     public CommonRequest getAuthCode() {
-        connect();
         Memory authCode = new Memory(6);
-        int status = dows.dv_get_auth_code(authCode);
+        int status = 1;
+
+        connect();
+        try {
+            status = dows.dv_get_auth_code(authCode);
+        } catch(Exception e) {
+            status = -1;
+        }
+        disconnect();
         CommonRequest resp = new CommonRequest(authCode.getString(0, "UTF-8"));
         this.authCode = resp.getAuth();
+        Memory.disposeAll();
         return resp;
     }
 
     public ReadCardResponse getCardNumber() {
-        connect();
-        
         Memory cardNo = new Memory(6);
+        connect();
         int status = 1;
         try {
             status = dows.dv_get_card_number(cardNo);
@@ -78,15 +94,16 @@ public class DowsJnaService {
             status = -1;
             e.printStackTrace();
         }
-        
+        disconnect();
         ReadCardResponse resp = new ReadCardResponse();
         resp.setCardNo(cardNo.getString(0, "UTF-8"));
         resp.setStatus(status);
+        Memory.disposeAll();
         return resp;
     }
 
     public ReadCardResponse readCard() {
-        Memory auth = authCode.length() > 0 ? new Memory(authCode.length()) : new Memory(1);
+        Memory auth = new Memory(authCode.length());
         if (authCode.length() > 0) {
             auth.write(0, authCode.getBytes(), 0, authCode.length());
         }
@@ -97,12 +114,14 @@ public class DowsJnaService {
         Memory arrival = new Memory(19);
         Memory departure = new Memory(19);
         int status = 1;
+        connect();
         try {
             status = dows.dv_read_card(auth, cardNo, building, room, door, arrival, departure);
         } catch (Exception e) {
             status = -1;
             e.printStackTrace();
         } 
+        disconnect();
         ReadCardResponse resp = new ReadCardResponse();
         resp.setStatus(status);
         resp.setCardNo(cardNo.getString(0, "UTF-8"));
@@ -111,6 +130,7 @@ public class DowsJnaService {
         resp.setDoor(door.getString(0, "UTF-8"));
         resp.setArrival(arrival.getString(0, "UTF-8"));
         resp.setDeparture(departure.getString(0, "UTF-8"));
+        Memory.disposeAll();
         return resp;
     }
 
@@ -135,13 +155,15 @@ public class DowsJnaService {
         Memory departure = new Memory(req.getDeparture().length());
         departure.write(0, req.getDeparture().getBytes(), 0, req.getDeparture().length());
         int status = 1;
+        connect();
         try {
             status = dows.dv_write_card(auth, building, room, door, arrival, departure);
         } catch (Exception e) {
             status = -1;
             e.printStackTrace();
         }
-        
+        disconnect();
+        Memory.disposeAll();
         return new CommonResponse(status);
     }
 
@@ -149,12 +171,15 @@ public class DowsJnaService {
         Memory room = new Memory(roomNo.length());
         room.write(0, roomNo.getBytes(), 0, roomNo.length());
         int status = 1;
+        connect();
         try {
             status = dows.dv_delete_card(room);
         } catch (Exception e) {
             status = -1;
             e.printStackTrace();
         }
+        disconnect();
+        Memory.disposeAll();
         return new CommonResponse(status);
     }
 }
